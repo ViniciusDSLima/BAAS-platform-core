@@ -1,6 +1,6 @@
 # Autorizador de Cartões
 ## Visão Geral
-Este projeto é um sistema de autorização de transações para cartões, desenvolvido com Spring Boot, Java 24 e MySQL. A aplicação permite criar cartões, consultar saldos e autorizar transações financeiras, simulando o comportamento de um autorizador de cartões de débito ou pré-pago.
+Este projeto é um sistema de autorização de transações para cartões, desenvolvido com Spring Boot, Java 17 e MySQL. A aplicação permite criar cartões, consultar saldos e autorizar transações financeiras, simulando o comportamento de um autorizador de cartões de débito ou pré-pago.
 ## Funcionalidades
 - **Cadastro de Cartões**: Cria novos cartões com número, senha e saldo inicial de R$ 500,00
 - **Consulta de Saldo**: Verifica o saldo disponível em um cartão
