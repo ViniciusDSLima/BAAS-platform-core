@@ -7,7 +7,7 @@ Este projeto é um sistema de autorização de transações para cartões, desen
 - **Autorização de Transações**: Valida e autoriza transações com base em regras de negócio
 
 ## Tecnologias Utilizadas
-- **Backend**: Spring Boot 3.5.3, Java 24
+- **Backend**: Spring Boot 3.5.3, Java 17
 - **Persistência**: Spring Data JPA, MySQL 5.7
 - **Containerização**: Docker e Docker Compose
 - **Testes**: JUnit, Mockito
