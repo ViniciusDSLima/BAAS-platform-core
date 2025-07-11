@@ -107,7 +107,7 @@ Este projeto é um sistema de autorização de transações para cartões, desen
 
 ## Configuração e Execução
 ### Pré-requisitos
-- Java 24 ou superior
+- Java 17 ou superior
 - Docker e Docker Compose
 - Maven
 
