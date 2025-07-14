@@ -1,7 +1,11 @@
-package com.bank.baas.infrastructure.persistence.repository;
+package com.bank.baas.infrastructure.persistence.repository.implementations;
 
 import com.bank.baas.domain.model.User;
 import com.bank.baas.domain.repository.UserRepository;
+import com.bank.baas.infrastructure.persistence.entity.UserEntity;
+import com.bank.baas.infrastructure.persistence.mapper.UserMapper;
+import com.bank.baas.infrastructure.persistence.repository.interfaces.SpringDataAccountRepository;
+import com.bank.baas.infrastructure.persistence.repository.interfaces.SpringDataUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -11,42 +15,56 @@ import java.util.UUID;
 @Repository
 public class JpaUserRepository implements UserRepository {
 
-    private final StringDataUserRepository userRepository;
+    private final SpringDataUserRepository userRepository;
+    private final SpringDataAccountRepository accountRepository;
     private final UserMapper userMapper;
 
     @Autowired
-    public JpaUserRepository(SpringDataUserRepository userRepository, UserMapper userMapper) {
+    public JpaUserRepository(SpringDataUserRepository userRepository, SpringDataAccountRepository accountRepository, UserMapper userMapper) {
         this.userRepository = userRepository;
+        this.accountRepository = accountRepository;
         this.userMapper = userMapper;
     }
 
     @Override
     public Optional<User> findUserByCPF(String cpf) {
-        return Optional.empty();
+        return userRepository.findByCpf(cpf)
+                .map(userMapper::toDomain);
     }
 
     @Override
     public Optional<User> findUserByAccount(String account) {
-        return Optional.empty();
+        return accountRepository.findByNumber(account)
+                .map(accountEntity -> accountEntity.getUser())
+                .map(userMapper::toDomain);
     }
 
     @Override
     public Optional<User> findUserByEmail(String email) {
-        return Optional.empty();
+        return userRepository.findByEmail(email)
+                .map(userMapper::toDomain);
     }
 
     @Override
     public Optional<User> findUserById(UUID id) {
-        return Optional.empty();
+        return userRepository.findById(id)
+                .map(userMapper::toDomain);
     }
 
     @Override
     public boolean existsByEmail(String email) {
-        return false;
+        return userRepository.existsByEmail(email);
     }
 
     @Override
     public boolean existsByCpf(String cpf) {
-        return false;
+        return userRepository.existsByCpf(cpf);
+    }
+
+    @Override
+    public User save(User user) {
+        UserEntity userEntity = userMapper.toEntity(user);
+        UserEntity savedEntity = userRepository.save(userEntity);
+        return userMapper.toDomain(savedEntity);
     }
 }
