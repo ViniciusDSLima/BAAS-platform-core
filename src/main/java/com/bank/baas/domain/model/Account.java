@@ -1,59 +1,35 @@
-package com.bank.authorizer.domain.model;
+package com.bank.baas.domain.model;
 
-import jakarta.persistence.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.smartcardio.Card;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Optional;
 import java.util.UUID;
 
-@Entity
-@Table(
-        name = "account",
-        indexes = {
-                @Index(name = "idx_account_number", columnList = "number", unique = true),
-                @Index(name = "idx_account_user_id", columnList = "user_id", unique = true),
-        }
-)
 public class Account {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false)
     private String number;
 
-    @Column(nullable = false)
     private String agency;
 
-    @Column(nullable = false)
     private BigDecimal balance;
 
-    @Column(nullable = false)
     private String password;
 
-    @OneToOne
-    @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(nullable = false)
-    @CreationTimestamp
     private LocalDateTime createdAt;
 
-    @Column(nullable = true)
-    @UpdateTimestamp
     private LocalDateTime updatedAt;
 
     public Account() {
     }
 
-    public Account(String number, String password) {
+    public Account(String number, String agency, String password) {
         this.id = UUID.randomUUID();
         this.number = number;
         this.password = password;
+        this.agency = agency;
         this.balance = new BigDecimal("0");
         this.createdAt = LocalDateTime.now();
     }
@@ -84,10 +60,17 @@ public class Account {
         return agency;
     }
 
-    public Optional<LocalDateTime> getUpdatedAt() {
-        return Optional.ofNullable(updatedAt);
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
 
     public User getUser() {
         return user;
@@ -102,8 +85,28 @@ public class Account {
     }
 
     public void decreaseBalance(BigDecimal amount) {
+        if (amount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("O valor deve ser maior que zero");
+        }
+
+        if (balance.compareTo(amount) < 0) {
+            throw new IllegalStateException("Saldo insuficiente");
+        }
+
         this.balance = this.balance.subtract(amount);
+        this.updatedAt = LocalDateTime.now();
+
     }
+
+    public void increaseBalance(BigDecimal amount) {
+        if (amount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("O valor deve ser maior que zero");
+        }
+
+        this.balance = this.balance.add(amount);
+        this.updatedAt = LocalDateTime.now();
+    }
+
 
     public boolean isPasswordCorrect(String password) {
         return this.password.equals(password);
