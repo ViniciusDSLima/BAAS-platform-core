@@ -5,7 +5,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -16,7 +17,7 @@ import java.util.UUID;
                 @Index(name = "idx_users_cpf", columnList = "cpf", unique = true)
         }
 )
-public class User {
+public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -28,6 +29,14 @@ public class User {
     private String cpf;
 
     @Column(nullable = false)
+    private String password;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "role")
+    private Set<String> roles = new HashSet<>();
+
+    @Column(nullable = false)
     @CreationTimestamp
     private LocalDateTime createdAt;
 
@@ -35,17 +44,29 @@ public class User {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "user")
-    private Account account;
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "userEntity")
+    private AccountEntity accountEntity;
 
-    public User() {
+    public UserEntity() {
+        this.roles = new HashSet<>();
     }
 
-    public User(String email, String cpf) {
+    public UserEntity(String email, String cpf) {
         this.id = UUID.randomUUID();
         this.email = email;
         this.cpf = cpf;
         this.createdAt = LocalDateTime.now();
+        this.roles = new HashSet<>();
+    }
+
+    public UserEntity(String email, String cpf, String password) {
+        this.id = UUID.randomUUID();
+        this.email = email;
+        this.cpf = cpf;
+        this.password = password;
+        this.createdAt = LocalDateTime.now();
+        this.roles = new HashSet<>();
+        this.roles.add("ROLE_USER");
     }
 
     public UUID getId() {
@@ -64,24 +85,67 @@ public class User {
         return createdAt;
     }
 
-    public Optional<LocalDateTime> getUpdatedAt() {
-        return Optional.ofNullable(updatedAt);
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
     }
-    
-    public Account getAccount() {
-        return account;
+
+    public AccountEntity getAccount() {
+        return accountEntity;
     }
 
     public String getCpf() {
         return cpf;
     }
 
-    public void setAccount(Account account) {
-        this.account = account;
-        
-        if (account != null && account.getUser() != this) {
-            account.setUser(this);
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public Set<String> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<String> roles) {
+        this.roles = roles;
+    }
+
+    public void addRole(String role) {
+        if (this.roles == null) {
+            this.roles = new HashSet<>();
+        }
+        this.roles.add(role);
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public void setAccountEntity(AccountEntity accountEntity) {
+        this.accountEntity = accountEntity;
+    }
+
+    public void setAccount(AccountEntity accountEntity) {
+        this.accountEntity = accountEntity;
+
+        if (accountEntity != null && accountEntity.getUser() != this) {
+            accountEntity.setUser(this);
         }
     }
-    
+
 }
