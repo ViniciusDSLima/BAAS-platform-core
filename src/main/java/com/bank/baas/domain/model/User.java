@@ -1,46 +1,47 @@
-package com.bank.authorizer.domain.model;
-
-import jakarta.persistence.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+package com.bank.baas.domain.model;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
-@Entity
-@Table(
-        name = "users",
-        indexes = {
-                @Index(name = "idx_users_email", columnList = "email", unique = true)
-        }
-)
 public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false)
     private String email;
 
-    @Column(nullable = false)
-    @CreationTimestamp
+    private String cpf;
+
+    private String password;
+
+    private Set<String> roles;
+
     private LocalDateTime createdAt;
 
-    @Column(nullable = true)
-    @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "user")
     private Account account;
 
     public User() {
+        this.roles = new HashSet<>();
     }
 
-    public User(String email) {
+    public User(String email, String cpf) {
         this.id = UUID.randomUUID();
         this.email = email;
+        this.cpf = cpf;
         this.createdAt = LocalDateTime.now();
+        this.roles = new HashSet<>();
+    }
+
+    public User(String email, String cpf, String password) {
+        this.id = UUID.randomUUID();
+        this.email = email;
+        this.cpf = cpf;
+        this.password = password;
+        this.createdAt = LocalDateTime.now();
+        this.roles = new HashSet<>();
+        this.roles.add("ROLE_USER");
     }
 
     public UUID getId() {
@@ -59,20 +60,47 @@ public class User {
         return createdAt;
     }
 
-    public Optional<LocalDateTime> getUpdatedAt() {
-        return Optional.ofNullable(updatedAt);
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
     }
-    
+
     public Account getAccount() {
         return account;
     }
-    
+
+    public String getCpf() {
+        return cpf;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public Set<String> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<String> roles) {
+        this.roles = roles;
+    }
+
+    public void addRole(String role) {
+        if (this.roles == null) {
+            this.roles = new HashSet<>();
+        }
+        this.roles.add(role);
+    }
+
     public void setAccount(Account account) {
         this.account = account;
-        
+
         if (account != null && account.getUser() != this) {
             account.setUser(this);
         }
     }
-    
+
 }
