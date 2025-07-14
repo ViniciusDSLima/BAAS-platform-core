@@ -2,7 +2,6 @@ package com.bank.baas.domain.repository;
 
 
 import com.bank.baas.domain.model.Account;
-import com.bank.baas.domain.model.User;
 
 import java.util.List;
 import java.util.Optional;

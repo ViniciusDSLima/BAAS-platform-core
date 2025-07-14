@@ -2,7 +2,6 @@ package com.bank.baas.domain.repository;
 
 
 import com.bank.baas.domain.enums.TransactionStatus;
-import com.bank.baas.domain.model.Account;
 import com.bank.baas.domain.model.Transaction;
 
 import java.util.List;
