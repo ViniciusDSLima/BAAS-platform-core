@@ -1,47 +1,91 @@
-package com.bank.authorizer.domain.model;
+package com.bank.baas.domain.model;
 
-import jakarta.persistence.*;
+import com.bank.baas.domain.enums.TransactionStatus;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
-@Entity
+
 public class Transaction {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false)
-    private String cardNumber;
+    private User sender;
 
-    private String password;
+    private User receiver;
 
-    @Column(nullable = false)
-    private BigDecimal value;
+    private TransactionStatus status;
+
+    private BigDecimal amount;
+
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
 
     public Transaction() {
     }
 
-    public Transaction(String cardNumber, BigDecimal value, String password) {
-        this.id = UUID.randomUUID();
-        this.cardNumber = cardNumber;
-        this.value = value;
-        this.password = password;
+    public Transaction(User sender, User receiver, BigDecimal amount, LocalDateTime createdAt) {
+        this.sender = sender;
+        this.receiver = receiver;
+        this.status = TransactionStatus.PENDING;
+        this.amount = amount;
+        this.createdAt = createdAt;
     }
-
 
     public UUID getId() {
         return id;
     }
 
-    public String getCardNumber() {
-        return cardNumber;
+    public void setId(UUID id) {
+        this.id = id;
     }
 
-    public BigDecimal getValue() {
-        return value;
+    public User getSender() {
+        return sender;
     }
-    public String getPassword() {
-        return password;
+
+    public void setSender(User sender) {
+        this.sender = sender;
+    }
+
+    public User getReceiver() {
+        return receiver;
+    }
+
+    public void setReceiver(User receiver) {
+        this.receiver = receiver;
+    }
+
+    public TransactionStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(TransactionStatus status) {
+        this.status = status;
+    }
+
+    public BigDecimal getAmount() {
+        return amount;
+    }
+
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }
