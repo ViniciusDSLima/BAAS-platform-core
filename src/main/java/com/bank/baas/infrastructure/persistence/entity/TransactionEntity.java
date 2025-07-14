@@ -9,9 +9,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-/**
- * Entity representing a transaction in the system.
- */
 @Entity
 @Table(
         name = "transactions",
@@ -20,7 +17,7 @@ import java.util.UUID;
                 @Index(name = "idx_transactions_receiver_id", columnList = "receiver_id")
         }
 )
-public class Transaction {
+public class TransactionEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -33,7 +30,7 @@ public class Transaction {
                     foreignKeyDefinition = "FOREIGN KEY (sender_id) REFERENCES users(id)"
             )
     )
-    private User senderId;
+    private UserEntity sender;
 
     @ManyToOne
     @JoinColumn(
@@ -43,7 +40,7 @@ public class Transaction {
                     foreignKeyDefinition = "FOREIGN KEY (receiver_id) REFERENCES users(id)"
             )
     )
-    private User receiverId;
+    private UserEntity receiver;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -60,7 +57,7 @@ public class Transaction {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    public Transaction() {
+    public TransactionEntity() {
     }
 
     public UUID getId() {
@@ -71,20 +68,20 @@ public class Transaction {
         this.id = id;
     }
 
-    public User getSenderId() {
-        return senderId;
+    public UserEntity getSender() {
+        return sender;
     }
 
-    public void setSenderId(User senderId) {
-        this.senderId = senderId;
+    public void setSender(UserEntity sender) {
+        this.sender = sender;
     }
 
-    public User getReceiverId() {
-        return receiverId;
+    public UserEntity getReceiver() {
+        return receiver;
     }
 
-    public void setReceiverId(User receiverId) {
-        this.receiverId = receiverId;
+    public void setReceiver(UserEntity receiver) {
+        this.receiver = receiver;
     }
 
     public TransactionStatus getStatus() {
