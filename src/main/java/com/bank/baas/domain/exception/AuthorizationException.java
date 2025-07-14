@@ -1,4 +1,4 @@
-package com.bank.authorizer.domain.exception;
+package com.bank.baas.domain.exception;
 
 public class AuthorizationException extends RuntimeException{
     private final String message;
