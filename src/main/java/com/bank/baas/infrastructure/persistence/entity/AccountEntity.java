@@ -6,7 +6,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Optional;
 import java.util.UUID;
 
 @Entity
@@ -17,7 +16,7 @@ import java.util.UUID;
                 @Index(name = "idx_account_user_id", columnList = "user_id", unique = true),
         }
 )
-public class Account {
+public class AccountEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -34,7 +33,7 @@ public class Account {
     @Column(nullable = false)
     private String password;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(
             name = "user_id",
             foreignKey = @ForeignKey(
@@ -42,7 +41,7 @@ public class Account {
                     foreignKeyDefinition = "FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE"
             )
     )
-    private User user;
+    private UserEntity userEntity;
 
     @Column(nullable = false)
     @CreationTimestamp
@@ -52,10 +51,10 @@ public class Account {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    public Account() {
+    public AccountEntity() {
     }
 
-    public Account(String number, String password) {
+    public AccountEntity(String number, String password) {
         this.id = UUID.randomUUID();
         this.number = number;
         this.password = password;
@@ -64,11 +63,11 @@ public class Account {
     }
 
 
-    public Account(String number, String agency, User user, String password) {
+    public AccountEntity(String number, String agency, UserEntity userEntity, String password) {
         this.number = number;
         this.agency = agency;
         this.balance = new BigDecimal("0");
-        this.user = user;
+        this.userEntity = userEntity;
         this.password = password;
         this.createdAt = LocalDateTime.now();
     }
@@ -89,17 +88,56 @@ public class Account {
         return agency;
     }
 
-    public Optional<LocalDateTime> getUpdatedAt() {
-        return Optional.ofNullable(updatedAt);
+    public String getPassword() {
+        return password;
     }
 
-
-    public User getUser() {
-        return user;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public UserEntity getUserEntity() {
+        return userEntity;
+    }
+
+    public UserEntity getUser() {
+        return userEntity;
+    }
+
+    public void setUser(UserEntity userEntity) {
+        this.userEntity = userEntity;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
+
+    public void setAgency(String agency) {
+        this.agency = agency;
+    }
+
+    public void setBalance(BigDecimal balance) {
+        this.balance = balance;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setUserEntity(UserEntity userEntity) {
+        this.userEntity = userEntity;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
